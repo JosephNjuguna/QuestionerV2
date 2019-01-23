@@ -3,6 +3,7 @@ meetup database connection and  model
 """
 #inbuilt modules
 import datetime
+import psycopg2.extras
 #import uuid
 # local imports
 from app.api.v2.models.database import init_db
@@ -51,3 +52,12 @@ class MeetUp(BaseModel):
         database.commit()
         cur.close()
         return int(meetup_id)
+
+    def get_meetups(self):
+        """get all meetup"""
+        curr = self.db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        query = "SELECT id, createdon, venue, topic, happening, tags  FROM meetup"
+        curr.execute(query)
+        data = curr.fetchall()
+        curr.close()
+        return data
