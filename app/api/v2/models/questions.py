@@ -14,7 +14,6 @@ class QuestionsModel(BaseModel):
         """class constructor"""
         #from BaseModel module
         self.db = init_db()
-        #questions body
         self.question_body = question_body
         self.question_title = question_title
         self.meetup_id = meetup_id
@@ -23,7 +22,7 @@ class QuestionsModel(BaseModel):
         self.postedon = datetime.datetime.utcnow()
     
     def check_question_exist(self, question_body):
-        """checks if user already exists"""
+        """check if question already exists"""
         curr = self.db.cursor()
         query = "SELECT  body FROM questions WHERE body = '%s'" % (question_body)
         curr.execute(query)
@@ -31,19 +30,14 @@ class QuestionsModel(BaseModel):
 
     def post_question_db(self):
         """Add question details to the database"""
-        # check if question already exists
         if self.check_question_exist(self.question_body):
             return True
-
         database = self.db
         curr = database.cursor()
-        print("connected to  db")
         query = """INSERT INTO questions (createdon, postedby, meetupid, title, body, votes)
             VALUES ('{}', '{}', '{}', '{}', '{}', '{}')RETURNING id;
             """.format(self.postedon, self.user_id, self.meetup_id, self.question_title, self.question_body, self.votes)
-        print(query)
         curr.execute(query)
-        print("inserted")
         question_id = curr.fetchone()[0]
         database.commit()
         curr.close()
