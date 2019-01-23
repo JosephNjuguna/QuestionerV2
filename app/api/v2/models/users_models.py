@@ -14,7 +14,7 @@ class UserModel(BaseModel):
     def __init__(self, firstname="firstname", lastname="lastname", email="@mail.com", password="pass",confirm_password="pass", phonenumber="1233", username="user"):
         """initialize the user model"""
         self.db = init_db()
-        #user data
+        """user data"""
         self.firstname = firstname
         self.lastname = lastname
         self.email = email
@@ -24,14 +24,14 @@ class UserModel(BaseModel):
         self.phonenumber = phonenumber
         self.username = username
         self.isAdmin = False
-    #validate if user data exist or not(inheried by add user)
+    """validate if user data exist or not(inheried by add user"""
     def check_user_exist(self, username):
         """checks if user already exists"""
         curr = self.db.cursor()
         query = "SELECT  username FROM users WHERE username = '%s'" % (username)
         curr.execute(query)
         return curr.fetchone() is not None
-   
+    """check if user email already exist or not"""
     def check_email_exist(self, email):
         """checks if email already exists"""
         curr = self.db.cursor()
@@ -39,7 +39,7 @@ class UserModel(BaseModel):
         curr.execute(query)
         return curr.fetchone() is not None
     
-    #sign up user
+    """sign up user"""
     def add_user(self):
         """Add user details to the database"""
         user = {
@@ -73,3 +73,18 @@ class UserModel(BaseModel):
         database.commit()
         cur.close()
         return int(user_id)
+
+      #log in user
+    
+    """user sign in"""
+    def login_user(self, email):
+        """searches for a single user by use of email"""
+        """return user from the db given a username"""
+        database = self.db
+        curr = database.cursor()
+        curr.execute(
+            """SELECT id, firstname, lastname, passwor,registered
+            FROM users WHERE email = '%s'""" % (email))
+        data = curr.fetchone()
+        curr.close()
+        return data
