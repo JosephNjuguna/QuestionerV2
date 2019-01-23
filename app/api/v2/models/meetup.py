@@ -9,7 +9,7 @@ from app.api.v2.models.database import init_db
 from app.api.v2.models.basemodel import BaseModel
 #class
 class MeetUp(BaseModel):
-    def __init__(self, createdon="1/1/2018", location="unknown", topic="unknown", happeningon="1/1/2018", tags="unknown", user_id=0):
+    def __init__(self, createdon="1/1/2018", location="unknown", topic="unknown", happeningon="1/1/2018", tags="unknown", user_state=""):
         """class constructor"""
         self.db = init_db()
         self.createdon = createdon
@@ -17,7 +17,7 @@ class MeetUp(BaseModel):
         self.topic = topic
         self.happeningon = happeningon
         self.tags = tags
-        self.user_id = user_id
+        self.user_state = user_state
     
     def check_meetup_exist(self, topic):
         """check whether the meetup exist or not"""
@@ -26,10 +26,10 @@ class MeetUp(BaseModel):
         curr.execute(query)
         return curr.fetchone() is not None
     
-    def check_user_admin(self, user_id):
-        """check whether user id admin or not"""
+    def check_user_admin(self, user_state = "false"):
+        """check whether user is admin or not"""
         curr = self.db.cursor()
-        query = "SELECT id FROM users WHERE id = '%s'" % (user_id)
+        query = "SELECT isAdmin FROM users WHERE isAdmin = '%s'" % (user_state)
         curr.execute(query)
         return curr.fetchone() is not None
 
@@ -37,12 +37,9 @@ class MeetUp(BaseModel):
         meetup_data = {
             "topic": self.topic,
         }
-        """check if user is admin"""
-        if not self.check_user_admin(self.user_id):
-            return "You dont have access"
         """check if question exist"""
         if self.check_meetup_exist(meetup_data['topic']):
-            return "Meetup already exist"
+            return True
         database = self.db
         cur = database.cursor()
         query = """INSERT INTO meetup (createdon, venue, topic, happening, tags) 
