@@ -61,7 +61,7 @@ class MeetupTest(unittest.TestCase):
 
     def test_get_specific_meetup(self):
         """user should be able to get a specific meetup"""
-        response = self.app.get('/api/v2/meetup/1', data=json.dumps(self.record1), content_type='application/json')
+        response = self.app.get('/api/v2/meetup/upcoming/1', data=json.dumps(self.record1), content_type='application/json')
         self.assertEqual(response.status_code, 200)
     
     def test_update_a_meetup(self):

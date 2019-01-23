@@ -14,45 +14,46 @@ empty_id = {"message":"please add your profile id"}
 
 class PostMeetup(Resource):
     """admin create meetup endpoint"""
-    def post(self):
-            data = request.get_json()
-            createdon = datetime.datetime.utcnow()
-            location = data['location']
-            topic = data['topic']
-            happeningon = data['happeningon']
-            tags = data['tag']
-            user_state = data['isAdmin']
+    def __init__(self):
+        self.data = request.get_json()
+        self.createdon = datetime.datetime.utcnow()
+        self.location = self.data['location']
+        self.topic = self.data['topic']
+        self.happeningon = self.data['happeningon']
+        self.tags = self.data['tag']
+        self.user_state = self.data['isAdmin']
 
+    def post(self):
             """validate that all data is available"""
-            if len(location) == 0:
+            if len(self.location) == 0:
                 return make_response(jsonify(empty_loction),400)
 
-            if len(topic) == 0:
+            if len(self.topic) == 0:
                 return empty_topic,400
 
-            if len(happeningon) == 0:
+            if len(self.happeningon) == 0:
                 return empty_date,400
 
-            if len(tags) == 0:
+            if len(self.tags) == 0:
                 return empty_tag,400
             
-            if len(user_state) == 0:
+            if len(self.user_state) == 0:
                 return empty_id,400
 
             meetupdata= {
-                "createdon":createdon,
-                "location":location,
-                "topic": topic,
-                "happeningon": happeningon,
-                "tags":tags,
-                'user_state': user_state
+                "createdon":self.createdon,
+                "location":self.location,
+                "topic": self.topic,
+                "happeningon":self.happeningon,
+                "tags":self.tags,
+                'user_state': self.user_state
             }
             """pass meetup dict to Meetup Models"""
             meetup_db = MeetUp(**meetupdata)
             saved = meetup_db.create_meetup()
             resp = {
                 "message": "Meetup Succesfully Created",
-                "meetup": topic,
+                "meetup": self.topic,
                 "meetup_id": "{}".format(saved)
             }
             if saved == True:
@@ -77,8 +78,18 @@ class UpcomingMeetup(Resource):
     def __init__(self):
         pass
 class SpecificMeetup(Resource):   
-    def __init__(self):
-        pass
+    def get(self, m_id):
+        """get a specific meetup"""
+        one_meetup = MeetUp()
+        single_meetup_data =one_meetup.get_specific_meetup(m_id)
+        if single_meetup_data == False:
+            return make_response(jsonify({"message":"Meetup not found"}),404)
+        return make_response(jsonify({
+                "status":200,
+                "message":"Meetup found",
+                "data":[{
+                    "meetup": single_meetup_data
+                }]}),200)
 
 class DeleteMeetUp(Resource):
     def __init__(self):

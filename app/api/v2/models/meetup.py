@@ -27,6 +27,13 @@ class MeetUp(BaseModel):
         curr.execute(query)
         return curr.fetchone() is not None
     
+    def check_meetup_id(self, m_id):
+        """check whether the meetup exist or not"""
+        curr = self.db.cursor()
+        query = "SELECT id FROM meetup WHERE id = '%s'" % (m_id)
+        curr.execute(query)
+        return curr.fetchone() is not None
+    
     def check_user_admin(self, user_state = "false"):
         """check whether user is admin or not"""
         curr = self.db.cursor()
@@ -61,3 +68,13 @@ class MeetUp(BaseModel):
         data = curr.fetchall()
         curr.close()
         return data
+
+    def get_specific_meetup(self, m_id):
+        """check meetup id exist"""
+        if not self.check_meetup_id(m_id):
+            return False
+        """return a specific meetup available"""
+        curr = self.db.cursor()
+        query = "SELECT id , createdon, venue, topic, happening, tags FROM meetup WHERE id = '%s'" % (m_id)
+        curr.execute(query)
+        return curr.fetchone()
