@@ -9,7 +9,7 @@ class CheckData:
     @staticmethod
     def checkkey(data):
         for k, v in data.items():
-            if v == "":
+            if len(v)== 0:
                 return make_response(jsonify({"message":"empty field"}))
 
 class AuthValidation:
@@ -40,3 +40,4 @@ class AuthValidation:
     def check_password_match(password, confirm_password):
         if confirm_password != password:
             return True
+
