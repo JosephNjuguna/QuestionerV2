@@ -37,10 +37,10 @@ class MeetUp(BaseModel):
         meetup_data = {
             "topic": self.topic,
         }
-        # check if user is admin
+        """check if user is admin"""
         if not self.check_user_admin(self.user_id):
-            return "You dont have access to this"
-        # check if question exist
+            return "You dont have access"
+        """check if question exist"""
         if self.check_meetup_exist(meetup_data['topic']):
             return "Meetup already exist"
         database = self.db
