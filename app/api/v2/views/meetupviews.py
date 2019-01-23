@@ -15,7 +15,6 @@ empty_id = {"message":"please add your profile id"}
 class PostMeetup(Resource):
     """admin create meetup endpoint"""
     def post(self):
-        try:
             data = request.get_json()
             createdon = datetime.datetime.utcnow()
             location = data['location']
@@ -26,19 +25,19 @@ class PostMeetup(Resource):
 
             """validate that all data is available"""
             if len(location) == 0:
-                return empty_loction
+                return make_response(jsonify(empty_loction),400)
 
             if len(topic) == 0:
-                return empty_topic
+                return empty_topic,400
 
             if len(happeningon) == 0:
-                return empty_date
+                return empty_date,400
 
             if len(tags) == 0:
-                return empty_tag
+                return empty_tag,400
             
             if len(user_state) == 0:
-                return empty_id
+                return empty_id,400
 
             meetupdata= {
                 "createdon":createdon,
@@ -60,9 +59,6 @@ class PostMeetup(Resource):
                 return make_response(jsonify({"message":"Meet already up exist"}),409)
             return resp,201
             meetup_db.close_db()
-
-        except KeyError:
-            return make_response(jsonify({"message":"Key Error"}),500)
 
 class GetMeetup(Resource):
     def __init__(self):
