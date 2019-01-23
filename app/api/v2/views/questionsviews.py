@@ -50,7 +50,7 @@ class PostQuestion(Resource):
             question_data.close_db()
 
         except KeyError:
-            return make_response(jsonify({"status":500, "message": "Internal server error"}),500)
+            return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)
       
 class GetQuestionsMeetup(Resource):
     def __init__(self):
