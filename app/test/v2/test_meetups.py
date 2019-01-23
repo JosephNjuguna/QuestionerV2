@@ -1,13 +1,12 @@
 """test for api endpoints"""
-# inbuilt modelues
+# inbuilt modules
 import json
 import unittest
 # local imports
 from app import create_app
 class MeetupTest(unittest.TestCase):
     def setUp(self):
-        self.appliaction = create_app
-        self.app = self.appliaction.test_client()
+        self.app = create_app.test_client()
         self.record1 = {
             "location":"Kenya ,Safaricom",
             "topic":"Da",
