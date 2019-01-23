@@ -61,13 +61,21 @@ class PostMeetup(Resource):
             meetup_db.close_db()
 
 class GetMeetup(Resource):
-    def __init__(self):
-        pass
-
+    def get(self):
+        meetups = MeetUp()
+        all_meetups = meetups.get_meetups()
+        resp = {
+            "status":200,
+            "message":"all meetups",
+            "data":[{
+                "meetups":str(all_meetups)
+            }]
+        }
+        meetups.close_db()
+        return resp,200
 class UpcomingMeetup(Resource):
     def __init__(self):
         pass
-
 class SpecificMeetup(Resource):   
     def __init__(self):
         pass
