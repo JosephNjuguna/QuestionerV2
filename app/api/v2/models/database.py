@@ -3,7 +3,7 @@ import os
 #downloaded module
 from flask import current_app
 #local imports
-import psycopg2
+import psycopg2, psycopg2.extras
 
 def init_db():
     #users table
