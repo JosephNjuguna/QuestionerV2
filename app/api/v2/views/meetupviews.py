@@ -6,9 +6,14 @@ from flask import request, make_response, jsonify
 from app.api.v2.models.meetup import MeetUp
 from app.api.v2.utilis.validations import CheckData
 args = ""
+empty_loction ={"message":"Empty Meetup location"}
+empty_topic ={"message":"Empty Meetup topic field"}
+empty_date = {"message":"Empty date on when meetup is to happen"}
+empty_tag = {"message":"Please enter a  Tag"}
+empty_id = {"message":"please add your profile id"}
+
 class PostMeetup(Resource):
     """admin create meetup endpoint"""
-    #@tokenrequired
     def post(self):
         try:
             data = request.get_json()
@@ -17,10 +22,23 @@ class PostMeetup(Resource):
             topic = data['topic']
             happeningon = data['happeningon']
             tags = data['tag']
-            user_id = data['id']
+            user_state = data['isAdmin']
 
-            """validate that no key is empty"""
-            CheckData.checkkey(data)
+            """validate that all data is available"""
+            if len(location) == 0:
+                return empty_loction
+
+            if len(topic) == 0:
+                return empty_topic
+
+            if len(happeningon) == 0:
+                return empty_date
+
+            if len(tags) == 0:
+                return empty_tag
+            
+            if len(user_state) == 0:
+                return empty_id
 
             meetupdata= {
                 "createdon":createdon,
@@ -28,19 +46,21 @@ class PostMeetup(Resource):
                 "topic": topic,
                 "happeningon": happeningon,
                 "tags":tags,
-                'user_id': user_id
+                'user_state': user_state
             }
             """pass meetup dict to Meetup Models"""
             meetup_db = MeetUp(**meetupdata)
             saved = meetup_db.create_meetup()
-            meetup_id = saved
             resp = {
                 "message": "Meetup Succesfully Created",
                 "meetup": topic,
-                "meetup_id": "{}".format(meetup_id)
+                "meetup_id": "{}".format(saved)
             }
-            meetup_db.close_db()
+            if saved == True:
+                return make_response(jsonify({"message":"Meet already up exist"}),409)
             return resp,201
+            meetup_db.close_db()
+
         except KeyError:
             return make_response(jsonify({"message":"Key Error"}),500)
 
