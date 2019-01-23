@@ -17,6 +17,7 @@ class PostMeetup(Resource):
             topic = data['topic']
             happeningon = data['happeningon']
             tags = data['tag']
+            user_id = data['id']
 
             """validate that no key is empty"""
             CheckData.checkkey(data)
@@ -26,7 +27,8 @@ class PostMeetup(Resource):
                 "location":location,
                 "topic": topic,
                 "happeningon": happeningon,
-                "tags":tags
+                "tags":tags,
+                'user_id': user_id
             }
             """pass meetup dict to Meetup Models"""
             meetup_db = MeetUp(**meetupdata)
@@ -35,13 +37,13 @@ class PostMeetup(Resource):
             resp = {
                 "message": "Meetup Succesfully Created",
                 "meetup": topic,
-                "user_id": "{}".format(meetup_id)
+                "meetup_id": "{}".format(meetup_id)
             }
             meetup_db.close_db()
             return resp,201
         except KeyError:
             return make_response(jsonify({"message":"Key Error"}),500)
-            
+
 class GetMeetup(Resource):
     def __init__(self):
         pass
