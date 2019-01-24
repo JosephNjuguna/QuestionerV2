@@ -83,8 +83,6 @@ class SpecificUpcomingMeetup(Resource):
                 "data":[{
                     "meetup": single_meetup_data
                 }]}),200)
-
 class DeleteMeetUp(Resource):
     def __init__(self):
         pass
-
