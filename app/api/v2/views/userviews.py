@@ -115,16 +115,3 @@ class LogIn(Resource):
             return "The password is incorrect",400
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a field key"}), 500)
-    
-class OneUser(Resource):
-    """get one user endpoint"""
-    def __init__(self):
-        pass
-class UserUpdateInfo(Resource):
-    """user can update their information"""
-    def __init__(self):
-        pass
-class UserResetPassword(Resource):
-    """ a user can reset their password"""
-    def __init__(self):
-        pass

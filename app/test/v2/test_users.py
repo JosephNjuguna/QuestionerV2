@@ -5,8 +5,7 @@ from app import create_app
 
 class UsersTest(unittest.TestCase):
     def setUp(self):
-        self.application = create_app
-        self.app = self.application.test_client()
+        self.app = create_app("testing").test_client()
 #test good sign up 201
         self.user1 = {
             "firstname": "Joseph",

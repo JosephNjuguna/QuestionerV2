@@ -8,43 +8,55 @@ import psycopg2
 from instance.config import app_config
 
 def create_tables():
-    
     """users table"""
-    users_table = ('''CREATE TABLE IF NOT EXISTS users (
-            id serial PRIMARY KEY,
-            firstname VARCHAR(16) NOT NULL,
-            lastname VARCHAR(16) NOT NULL,
-            email VARCHAR(30) NOT NULL,
-            password VARCHAR(100) NOT NULL,
-            confirm_password VARCHAR(100) NOT NULL,
-            registered TIMESTAMP,
-            phonenumber VARCHAR(12) NOT NULL,
-            username VARCHAR(12) NOT NULL,
-            isAdmin VARCHAR(10) NOT NULL);
-            ''')
-    
+    users_table = '''CREATE TABLE IF NOT EXISTS users (
+        id serial PRIMARY KEY,
+        firstname VARCHAR(16) NOT NULL,
+        lastname VARCHAR(16) NOT NULL,
+        email VARCHAR(30) NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        confirm_password VARCHAR(100) NOT NULL,
+        registered TIMESTAMP,
+        phonenumber VARCHAR(12) NOT NULL,
+        username VARCHAR(12) NOT NULL,
+        isAdmin VARCHAR(10) NOT NULL);
+        '''
     """meetup table"""
-    meetup_table = ('''CREATE TABLE IF NOT EXISTS meetup (
-            id serial PRIMARY KEY,
-            createdon VARCHAR(30) NOT NULL,
-            venue VARCHAR(100) NOT NULL,
-            topic VARCHAR(100) NOT NULL,
-            happening VARCHAR(100) NOT NULL,
-            tags VARCHAR(30) NOT NULL);
-            ''')
-    
+    meetup_table = '''CREATE TABLE IF NOT EXISTS meetup (
+        id serial PRIMARY KEY,
+        createdon VARCHAR(30) NOT NULL,
+        venue VARCHAR(100) NOT NULL,
+        topic VARCHAR(100) NOT NULL,
+        happening VARCHAR(100) NOT NULL,
+        tags VARCHAR(30) NOT NULL);
+        '''
     """question table"""
-    question_table = ('''CREATE TABLE IF NOT EXISTS questions (
-            id SERIAL PRIMARY KEY,
-            createdon VARCHAR not null,
-            postedby INT NOT NULL,
-            meetupid INT NOT NULL,
-            title VARCHAR(40) NOT NULL,
-            body VARCHAR(200) NOT NULL,
-            votes  INT NOT NULL);
-            ''')
-    
-    return [users_table, meetup_table, question_table]
+    question_table = '''CREATE TABLE IF NOT EXISTS questions (
+        id SERIAL PRIMARY KEY,
+        createdon VARCHAR NOT null,
+        postedby INT NOT NULL,
+        meetupid INT NOT NULL,
+        title VARCHAR(40) NOT NULL,
+        body VARCHAR(200) NOT NULL,
+        votes  INT NOT NULL);
+        '''
+    rsvp_table= '''CREATE TABLE IF NOT EXISTS rsvp(
+        id SERIAL PRIMARY KEY,
+        rsvpdate VARCHAR NOT null,
+        topic VARCHAR(40) NOT NULL,
+        userstatus VARCHAR(5) NOT NULL,
+        username VARCHAR NOT NULL);
+        '''
+    return [users_table,question_table, meetup_table, rsvp_table]
+         
+def init_db():
+    tables= create_tables()
+    """connection to db"""
+    conn = psycopg2.connect("dbname='questioner' user='alan'")
+    cur = conn.cursor()
+    for query in tables:
+        cur.execute(query)
+    return conn
 
 def drop_existing_tables():
     users_table = """ DROP TABLE IF EXISTS users """

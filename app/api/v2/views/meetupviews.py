@@ -12,7 +12,7 @@ empty_date = {"message":"Empty date on when meetup is to happen"}
 empty_tag = {"message":"Please enter a  Tag"}
 empty_id = {"message":"please add your profile id"}
 
-class PostMeetup(Resource):
+class Meetup(Resource):
     """admin create meetup endpoint"""
     def __init__(self):
         self.data = request.get_json()
@@ -58,7 +58,6 @@ class PostMeetup(Resource):
         except:
             return make_response(jsonify({"message":"Please check your keys. Either Meetup: topic,location,tags"}),400)
 
-class GetMeetup(Resource):
     def get(self):
         meetups = MeetUp()
         all_meetups = meetups.get_meetups()
@@ -68,10 +67,10 @@ class GetMeetup(Resource):
             "data":[{"meetups":all_meetups}]
         }
         return resp,200
-class UpcomingMeetup(Resource):
-    def __init__(self):
+    
+    def delete(self,m_id):
         pass
-class SpecificMeetup(Resource):   
+class SpecificUpcomingMeetup(Resource):   
     def get(self, m_id):
         """get a specific meetup"""
         one_meetup = MeetUp()
@@ -84,8 +83,6 @@ class SpecificMeetup(Resource):
                 "data":[{
                     "meetup": single_meetup_data
                 }]}),200)
-
 class DeleteMeetUp(Resource):
     def __init__(self):
         pass
-

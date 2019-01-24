@@ -39,7 +39,7 @@ class MeetUp(connection):
             "topic": self.topic,
         }
         """check if question exist"""
-        if self.check_meetup_exist(meetup_data['topic']):
+        if self.check_meetup_exist(self.topic):
             return True
         query = """INSERT INTO meetup (createdon, venue, topic, happening, tags) 
             VALUES ('{}', '{}', '{}', '{}', '{}') RETURNING id;

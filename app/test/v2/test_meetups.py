@@ -6,7 +6,7 @@ import unittest
 from app import create_app
 class MeetupTest(unittest.TestCase):
     def setUp(self):
-        self.app = create_app.test_client()
+        self.app = create_app("testing").test_client()
         self.record1 = {
             "location":"Kenya ,Safaricom",
             "topic":"CNN MONEY",
