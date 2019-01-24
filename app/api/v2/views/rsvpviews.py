@@ -5,8 +5,6 @@ from flask import request, make_response, jsonify
 #local imports
 from app.api.v2.models.rsvp_models import rsvp_model
 from app.api.v2.utilis.validations import CheckData
-
-
 class rsvp_meetup(Resource):
     def post(self, m_id):
         try:
@@ -41,9 +39,6 @@ class rsvp_meetup(Resource):
                     "data": rsvp_data
                 }
             }, 201
-            print(check_meetup)
-            print(check_user)
-            print(check_user_rsvpd)
 
             if check_meetup == True:
                 if check_user == True:
@@ -52,7 +47,5 @@ class rsvp_meetup(Resource):
                     return response
                 return make_response(jsonify({"message": "Username not found"}), 404)
             return make_response(jsonify({"message": "Meetup id and topic not found"}), 404)
-            rsvp_db.close_db()
-
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a topic, status, username field"}), 500)
