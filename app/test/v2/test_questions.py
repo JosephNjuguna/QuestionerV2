@@ -7,8 +7,7 @@ from app import create_app
 class QuestionsTest(unittest.TestCase):
     """Testing Question URL API endpoints"""
     def setUp(self):
-        self.application = create_app
-        self.app = self.application.test_client()
+        self.app = create_app("testing").test_client()
         
         self.question1 = {
             "question_body":"Youtube ads are everything??",
