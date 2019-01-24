@@ -40,10 +40,11 @@ class rsvp_model(BaseModel):
         curr = self.db.cursor()
         query = "SELECT username FROM rsvp WHERE username = '%s'" % (username)
         curr.execute(query)
-        if curr.fetchone() is not None:
-            return True
-            
+        return curr.fetchone() is not None
+    
     def rsvp_meetup(self):
+        if self.check_user_rsvp(self.username):
+            return True
         database = self.db
         cur = database.cursor()
         query = """INSERT INTO rsvp (rsvpdate, topic, userstatus, username) 
