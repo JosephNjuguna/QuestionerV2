@@ -17,7 +17,6 @@ class SignUp(Resource):
     """user sign up endpoint"""
     @staticmethod
     def post():
-        try:
             data = request.get_json()
             data_state = data_validation.checkkey(data)
 
@@ -72,11 +71,6 @@ class SignUp(Resource):
                 }]
             }
             return resp
-            user_data.close_db()
-
-        except KeyError:
-            return make_response(jsonify({"status": 500, "error": "Expecting a field key"}), 500)
-
 class LogIn(Resource):
     """user log in endpoint"""
     @staticmethod

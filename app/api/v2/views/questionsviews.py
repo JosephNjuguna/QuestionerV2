@@ -63,8 +63,19 @@ class GetSingleQuestion(Resource):
 
 class UpvoteQuestion(Resource):
     """upvote question class"""
-    def __init__(self):
-        pass
+    @staticmethod
+    def patch(m_id, q_id):
+        upvoted = QuestionsModel().upvote_question(m_id, q_id)
+        question_id, question_createdon, question_title, question_body, question_votes= upvoted
+        resp = {
+            "id":question_id,
+            "createdon": question_createdon,
+            "question_meetup_id":question_body,
+            "question_title":question_title,
+            "question_body":question_body,
+            "votes":question_votes
+        }
+        print(resp)
 
 class DownVoteQuestion(Resource):
     """downvote question class"""

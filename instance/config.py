@@ -1,35 +1,39 @@
+""" API config File """
 import os
-import datetime
 
 class Config(object):
-    """Parent configuration class."""
-    DEBUG = False
-    CSRF_ENABLED = True
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=30)
+    """ Parent configuration class """
 
-class DevelopmentConfig(Config):
-    """Development phase configurations"""
-    DEBUG = True
-
-class TestingConfig(Config):
-    """Testing Configurations."""
-    TESTING = True
-    DEBUG = True
-    DATABASE_URL = os.getenv("DATABASE_TEST_URL")
-
-
-class ReleaseConfig(Config):
-    """Release Configurations."""
     DEBUG = False
     TESTING = False
+    Database_Url = os.getenv("DATABASE_URL")
+    SECRET_KEY = os.getenv("SECRET")
 
+class DevelopmentConfig(Config):
+    """ Configuration for development environment """
+    DEBUG = True
+    Database_Url = os.getenv("DATABASE_URL")
+
+class StagingConfig(Config):
+    """ Configuration for the staging environment """
+    DEBUG = True
+    Database_Url = os.getenv("DATABASE_TEST_URL")
+
+class TestingConfig(Config):
+    """ Configuration for the testing environment """
+    TESTING = True
+    DEBUG = True
+    Database_Url = os.getenv("DATABASE_TEST_URL")
+
+class ProductionConfig(Config):
+    """ Configuration for the production environment """
+    DEBUG = False
+    TESTING = False
+    Database_Url = os.getenv("DATABASE_URL")
 
 app_config = {
-    'config':Config,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
-    'release': ReleaseConfig,
+    'staging': StagingConfig,
+    'production': ProductionConfig
 }

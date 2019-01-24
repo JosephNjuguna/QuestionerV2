@@ -5,16 +5,13 @@ import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # local imports
-from app.api.v2.models.database import init_db
-from app.api.v2.models.basemodel import BaseModel
+from app.api.v2.models.basemodel import DatabaseConnection as connection
 
-class UserModel(BaseModel):
+class UserModel(connection):
     """This class encapsulates the functions of the user model"""
 
     def __init__(self, firstname="firstname", lastname="lastname", email="@mail.com", password="pass",confirm_password="pass", phonenumber="1233", username="user"):
-        """initialize the user model"""
-        self.db = init_db()
-        """user data"""
+        """create instance of user model"""
         self.firstname = firstname
         self.lastname = lastname
         self.email = email
@@ -24,20 +21,20 @@ class UserModel(BaseModel):
         self.phonenumber = phonenumber
         self.username = username
         self.isAdmin = False
+    
     """validate if user data exist or not(inheried by add user"""
     def check_user_exist(self, username):
         """checks if user already exists"""
-        curr = self.db.cursor()
         query = "SELECT  username FROM users WHERE username = '%s'" % (username)
-        curr.execute(query)
-        return curr.fetchone() is not None
+        result = self.fetch_single_data_row(query)
+        return result
+
     """check if user email already exist or not"""
     def check_email_exist(self, email):
         """checks if email already exists"""
-        curr = self.db.cursor()
         query = "SELECT  email FROM users WHERE email = '%s'" % (email)
-        curr.execute(query)
-        return curr.fetchone() is not None
+        result = self.fetch_single_data_row(query)
+        return result
     
     """sign up user"""
     def add_user(self):
@@ -61,30 +58,14 @@ class UserModel(BaseModel):
             return "email exist"
             
         # check if user exists
-        database = self.db
-        cur = database.cursor()
-        query = """INSERT INTO users (firstname, lastname, email, passwor, confirm_password, registered, phonenumber, username, isAdmin) \
-            VALUES (%(firstname)s, %(lastname)s, %(email)s, %(password)s, %(confirm_password)s, %(registered)s, %(phonenumber)s, %(username)s, %(isAdmin)s)
-            RETURNING id, registered;
-            """
-        cur.execute(query, user)
-        print("inserted")
-        user_id = cur.fetchone()[0]
-        database.commit()
-        cur.close()
-        return int(user_id)
-
-      #log in user
+        query = """INSERT INTO users(firstname, lastname, email, password, confirm_password, registered, phonenumber, username, isAdmin) 
+            VALUES('{}','{}','{}','{}','{}','{}','{}','{}','{}')RETURNING id, registered;""".format(self.firstname,self.lastname,self.email,self.password,self.confirm_password,self.registered, self.phonenumber, self.username, self.isAdmin)
+        result = self.save_incoming_data_or_updates(query)
+        return result
     
-    """user sign in"""
     def login_user(self, email):
-        """searches for a single user by use of email"""
-        """return user from the db given a username"""
-        database = self.db
-        curr = database.cursor()
-        curr.execute(
-            """SELECT id, firstname, lastname, passwor,registered
-            FROM users WHERE email = '%s'""" % (email))
-        data = curr.fetchone()
-        curr.close()
+        """user sign in"""
+        query =("""SELECT id, firstname, lastname,password,registered 
+        FROM users WHERE email = '%s' """ % (email))
+        data = self.fetch_single_data_row(query)
         return data
