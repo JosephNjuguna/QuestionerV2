@@ -46,7 +46,7 @@ class MeetUp(BaseModel):
             "topic": self.topic,
         }
         """check if question exist"""
-        if self.check_meetup_exist(meetup_data['topic']):
+        if self.check_meetup_exist(self.topic):
             return True
         database = self.db
         cur = database.cursor()
