@@ -5,9 +5,9 @@ from flask import current_app
 #local imports
 import psycopg2, psycopg2.extras
 
-def init_db():
-    #users table
-    users_table = ('''CREATE TABLE IF NOT EXISTS users (
+def create_tables():
+        #users table
+        users_table ='''CREATE TABLE IF NOT EXISTS users (
             id serial PRIMARY KEY,
             firstname VARCHAR(16) NOT NULL,
             lastname VARCHAR(16) NOT NULL,
@@ -18,35 +18,43 @@ def init_db():
             phonenumber VARCHAR(12) NOT NULL,
             username VARCHAR(12) NOT NULL,
             isAdmin VARCHAR(10) NOT NULL);
-            ''')
-    print("users")
-    #meetup table
-    meetup_table = ('''CREATE TABLE IF NOT EXISTS meetup (
+            '''
+        #meetup table
+        meetup_table ='''CREATE TABLE IF NOT EXISTS meetup (
             id serial PRIMARY KEY,
             createdon TIMESTAMP,
             venue VARCHAR(100) NOT NULL,
             topic VARCHAR(100) NOT NULL,
             happening VARCHAR(100) NOT NULL,
             tags VARCHAR(30) NOT NULL);
-            ''')
-    print("meetup")
-    #question table
-    question_table = ('''CREATE TABLE IF NOT EXISTS questions (
+            '''
+        #question table
+        question_table ='''CREATE TABLE IF NOT EXISTS questions (
             id SERIAL PRIMARY KEY,
-            createdon VARCHAR not null,
+            createdon VARCHAR NOT null,
             postedby INT NOT NULL,
             meetupid INT NOT NULL,
             title VARCHAR(40) NOT NULL,
             body VARCHAR(200) NOT NULL,
             votes  INT NOT NULL);
-            ''')
+            '''
+        rsvp_table= '''CREATE TABLE IF NOT EXISTS rsvp(
+            id SERIAL PRIMARY KEY,
+            rsvpdate VARCHAR NOT null,
+            topic VARCHAR(40) NOT NULL,
+            userstatus VARCHAR(5) NOT NULL,
+            username VARCHAR NOT NULL);
+            '''
+        return [users_table,question_table, meetup_table, rsvp_table]
     
+        
+def init_db():
+    tables= create_tables()
     """connection to db"""
     conn = psycopg2.connect("dbname='questioner' user='alan'")
     cur = conn.cursor()
-    cur.execute(question_table)
-    cur.execute(meetup_table)
-    cur.execute(users_table)
+    for query in tables:
+        cur.execute(query)
     return conn
 
 def _init_db():
