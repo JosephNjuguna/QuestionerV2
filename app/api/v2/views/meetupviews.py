@@ -16,14 +16,14 @@ class Meetup(Resource):
     """admin create meetup endpoint"""
     def __init__(self):
         self.data = request.get_json()
-        self.createdon = datetime.datetime.utcnow()
+        self.createdon = datetime.datetime.utcnow().strftime("%a/%b/%Y")
         self.location = self.data['location']
         self.topic = self.data['topic']
         self.happeningon = self.data['happeningon']
         self.tags = self.data['tag']
-        self.user_state = self.data['isAdmin']
 
     def post(self):
+        try:
             """validate that all data is available"""
             if len(self.location) == 0:
                 return make_response(jsonify(empty_loction),400)
@@ -36,9 +36,6 @@ class Meetup(Resource):
 
             if len(self.tags) == 0:
                 return empty_tag,400
-            
-            if len(self.user_state) == 0:
-                return empty_id,400
 
             meetupdata= {
                 "createdon":self.createdon,
@@ -46,7 +43,6 @@ class Meetup(Resource):
                 "topic": self.topic,
                 "happeningon":self.happeningon,
                 "tags":self.tags,
-                'user_state': self.user_state
             }
             """pass meetup dict to Meetup Models"""
             meetup_db = MeetUp(**meetupdata)
@@ -59,7 +55,8 @@ class Meetup(Resource):
             if saved == True:
                 return make_response(jsonify({"message":"Meet already up exist"}),409)
             return resp,201
-            meetup_db.close_db()
+        except:
+            return make_response(jsonify({"message":"Please check your keys. Either Meetup: topic,location,tags"}),400)
 
     def get(self):
         meetups = MeetUp()
@@ -67,11 +64,8 @@ class Meetup(Resource):
         resp = {
             "status":200,
             "message":"all meetups",
-            "data":[{
-                "meetups":str(all_meetups)
-            }]
+            "data":[{"meetups":all_meetups}]
         }
-        meetups.close_db()
         return resp,200
     
     def delete(self,m_id):
@@ -89,3 +83,8 @@ class SpecificUpcomingMeetup(Resource):
                 "data":[{
                     "meetup": single_meetup_data
                 }]}),200)
+
+class DeleteMeetUp(Resource):
+    def __init__(self):
+        pass
+
