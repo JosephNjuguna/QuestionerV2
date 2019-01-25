@@ -41,6 +41,14 @@ def create_tables():
         body VARCHAR(200) NOT NULL,
         votes  INT NOT NULL);
         '''
+    """comments table"""
+    comments_table = '''CREATE TABLE IF NOT EXISTS comments(
+        id SERIAL PRIMARY KEY,
+        createdon VARCHAR NOT null,
+        postedby INT NOT NULL,
+        questionid INT NOT NULL,
+        body VARCHAR(200) NOT NULL);
+        '''
     rsvp_table= '''CREATE TABLE IF NOT EXISTS rsvp(
         id SERIAL PRIMARY KEY,
         rsvpdate VARCHAR NOT null,
@@ -48,7 +56,7 @@ def create_tables():
         userstatus VARCHAR(5) NOT NULL,
         username VARCHAR NOT NULL);
         '''
-    return [users_table,question_table, meetup_table, rsvp_table]
+    return [users_table,question_table, meetup_table, rsvp_table,comments_table]
          
 def init_db():
     tables= create_tables()
@@ -65,7 +73,6 @@ def drop_existing_tables():
     questions_table = """ DROP TABLE IF EXISTS questions """
     comments_table= """ DROP TABLE IF EXISTS comments """
     rsvp_table = """ DROP TABLE IF EXISTS rsvp """
-    votes_table = """ DROP TABLE IF EXISTS votes """
 
     return [votes_table, rsvp_table, comments_table, meetups_table, questions_table, users_table]
 

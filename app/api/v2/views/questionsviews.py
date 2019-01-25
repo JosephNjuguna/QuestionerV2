@@ -44,7 +44,7 @@ class PostQuestion(Resource):
             resp = {
                 "message": "Question successfully posted",
                 "username": question_body,
-                "user_id": "{}".format(question_id)
+                "question_id": "{}".format(question_id)
             }
             if saved == True:
                 return make_response(jsonify({"Message":"Question already exist"}),409)
@@ -82,7 +82,6 @@ class GetSingleQuestion(Resource):
                 "meetups": str(one_meetup_questions)
                 }]
         }
-        single_question.close_db()
         return resp,200
 
 class UpvoteQuestion(Resource):
