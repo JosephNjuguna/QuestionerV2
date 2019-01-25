@@ -72,8 +72,18 @@ class GetQuestionsMeetup(Resource):
 
 class GetSingleQuestion(Resource):
     """get single question class"""
-    def __init__(self):
-        pass
+    def get(self, m_id, q_id ):
+        single_question = QuestionsModel()
+        one_meetup_questions= single_question.get_specificquestion(m_id, q_id)
+        resp = {
+            "status":200,
+            "message":"all meetups",
+            "data":[{
+                "meetups": str(one_meetup_questions)
+                }]
+        }
+        single_question.close_db()
+        return resp,200
 
 class UpvoteQuestion(Resource):
     """upvote question class"""
