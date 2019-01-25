@@ -7,6 +7,8 @@ from flask import request, make_response, jsonify
 #local import
 from app.api.v2.utilis.validations import CheckData
 from app.api.v2.models.questions import QuestionsModel
+from app.api.v2.models.meetup import MeetUp
+
 #error messages
 empty_question_title = "Question title empty. Please input data"
 empty_question_body = "Question body empty. Please input data"
@@ -52,8 +54,21 @@ class PostQuestion(Resource):
             return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)
       
 class GetQuestionsMeetup(Resource):
-    def __init__(self):
-        pass
+    def get(self, m_id):
+        questions = QuestionsModel()
+        meetup_id = questions.check_meetup_id(m_id)
+        single_meetup_questions= questions.get_questions(m_id)
+        resp = {
+            "status":200,
+            "message":"all meetups",
+            "data":[{
+                "meetups": single_meetup_questions
+                }]
+        }
+        if not meetup_id:
+            return make_response(jsonify({"Message":"Meetup id not found"}),404)
+        return resp
+
 
 class GetSingleQuestion(Resource):
     """get single question class"""

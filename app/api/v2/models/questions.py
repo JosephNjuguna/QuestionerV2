@@ -30,6 +30,12 @@ class QuestionsModel(connection):
         query = "SELECT id FROM questions WHERE id = '%s'" % (q_id)
         result = self.fetch_single_data_row(query)
         return result
+    
+    def check_meetup_id(self, m_id):
+        """check whether the meetup exist or not"""
+        query = """SELECT id FROM meetup WHERE id = '%s'""" % (m_id)
+        result = self.fetch_single_data_row(query)
+        return True
 
     def post_question_db(self):
         """Add question details to the database"""
@@ -41,10 +47,14 @@ class QuestionsModel(connection):
         result = self.save_incoming_data_or_updates(query)
         return result
     
+    def get_questions(self , m_id):
+        """get question from db"""
+        query = "SELECT * FROM questions WHERE meetupid = '%s'" % (m_id)
+        result = self.fetch_all_tables_rows(query)
+        return result
+    
     #remaining
     def upvote_question(self,m_id, q_id):
-        if self.check_question_exist(q_id):
-            return True
         query = "SELECT id, createdon, postedby, meetupid, title, body, votes FROM questions WHERE id = '%s'" % (q_id)
         data = self.fetch_single_data_row(query)
         return data
