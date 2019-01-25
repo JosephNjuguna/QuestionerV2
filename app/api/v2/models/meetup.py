@@ -8,12 +8,12 @@ import psycopg2.extras
 from app.api.v2.models.basemodel import DatabaseConnection as connection
 #class
 class MeetUp(connection):
-    def __init__(self, createdon="1/1/2018", location="unknown", topic="unknown", happeningon="1/1/2018", tags="unknown"):
+    def __init__(self, created_on="", location="unknown", topic="unknown", happening_on="", tags="unknown"):
         """class constructor"""
-        self.createdon = createdon
+        self.createdon = created_on
         self.location = location
         self.topic = topic
-        self.happeningon = happeningon
+        self.happeningon = happening_on
         self.tags = tags
     
     def check_meetup_exist(self, topic):
@@ -58,6 +58,15 @@ class MeetUp(connection):
         if not self.check_meetup_id(m_id):
             return False
         """return a specific meetup available"""
-        query = """SELECT id , createdon, venue, topic, happening, tags FROM meetup WHERE id = '%s' % (m_id)"""
+        query = """SELECT id , createdon, venue, topic, happening, tags FROM meetup WHERE id = '%s' """%(m_id)
         result = self.fetch_single_data_row(query)
+        return result
+    
+    def delete_specific_meetup(self, m_id):
+        """check meetup id exist"""
+        if not self.check_meetup_id(m_id):
+            return False
+        """delete a specific meetup available"""
+        query = """DELETE FROM meetup WHERE id = '%s' """%(m_id)
+        result = self.delete_single_data_row(query)
         return result
