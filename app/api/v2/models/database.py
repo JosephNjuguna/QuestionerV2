@@ -74,7 +74,7 @@ def drop_existing_tables():
     comments_table= """ DROP TABLE IF EXISTS comments """
     rsvp_table = """ DROP TABLE IF EXISTS rsvp """
 
-    return [votes_table, rsvp_table, comments_table, meetups_table, questions_table, users_table]
+    return [rsvp_table, comments_table, meetups_table, questions_table, users_table]
 
 def drop_tables(connect):
     queries = drop_existing_tables()

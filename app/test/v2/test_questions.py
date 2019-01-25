@@ -36,16 +36,6 @@ class QuestionsTest(unittest.TestCase):
         response = self.app.get('/api/v2/meetup/1/question/1', data=json.dumps(self.question1), content_type='application/json')
         self.assertEqual(response.status_code, 200)
     
-    def test_4_questions(self):
-        """test that user upvote question"""
-        response = self.app.patch('/api/v2/meetup/1/question/1/upvote', data=json.dumps(self.question1), content_type='application/json')
-        self.assertEqual(response.status_code, 204)
-    
-    def test_5_questions(self):
-        """test that user down a question"""
-        response = self.app.patch('/api/v2/meetup/1/question/1/downvote', data=json.dumps(self.question1), content_type='application/json')
-        self.assertEqual(response.status_code, 204)
-
     def test_empty_title_question_post(self):
         """test user input question with empty title"""
         response = self.app.post('/api/v2/meetup/1/question', data=json.dumps(self.question2), content_type='application/json')

@@ -15,7 +15,7 @@ empty_id = {"message":"please add your profile id"}
 class Meetup(Resource):
     """admin create meetup endpoint"""
     def post(self):
-        #try:
+        try:
             data = request.get_json()
             createdon = datetime.datetime.utcnow().strftime("%a/%b/%Y")
             location = data['location']
@@ -52,11 +52,12 @@ class Meetup(Resource):
                 "created_on":createdon,
                 "meetup_id":saved
             }
-            if saved == True:
-                return make_response(jsonify({"message":"Meetup already up exist"}),409)
-            return resp,201
-        #except:
-            #return make_response(jsonify({"message":"Please check your keys. Either Meetup: topic,location,tags"}),400)
+            if saved != True:
+                return make_response(jsonify({"message":resp}),201)
+            return make_response(jsonify({"message":"Meetup already up exist"}),409)
+            
+        except:
+            return make_response(jsonify({"message":"Please check your keys. Either Meetup: topic,location,tags"}),400)
     
     @staticmethod
     def get():
