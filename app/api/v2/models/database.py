@@ -14,11 +14,12 @@ def create_tables():
         firstname VARCHAR(16) NOT NULL,
         lastname VARCHAR(16) NOT NULL,
         email VARCHAR(30) NOT NULL,
-        password VARCHAR(100) NOT NULL,
+        user_password VARCHAR(100) NOT NULL,
         confirm_password VARCHAR(100) NOT NULL,
         registered TIMESTAMP,
         phonenumber VARCHAR(12) NOT NULL,
         username VARCHAR(12) NOT NULL,
+        public_id VARCHAR(50) NOT NULL,
         isAdmin VARCHAR(10) NOT NULL);
         '''
     """meetup table"""
@@ -78,10 +79,9 @@ def drop_tables(connect):
     connect.close()
 
 def create_admin(connect):
-    query = """INSERT INTO users (
-            firstname, lastname, username, email, phonenumber, password, confirm_password, registered, isAdmin) 
-    VALUES( '{}', '{}','admin','adm@admn.com','07012345678', '{}', '{}', '1/1/2018','true')""".format(
-            'admin', 'super', 'admin', generate_password_hash("$$PAss12"))
+    query = """INSERT INTO users (firstname, lastname,  email, user_password, confirm_password, phonenumber, username, public_id, isAdmin) 
+    VALUES('{}','{}','{}','{}','{}','0712345678','admin','{}','True')""".format('admin','super','adm@admn.com', generate_password_hash("189@admin",method='sha256'), generate_password_hash("189@admin",method='sha256'),uuid.uuid4())
+    
     get_admin = """SELECT * from users WHERE username = 'admin'"""
     cur = connect.cursor()
     get_admin = cur.execute(get_admin)

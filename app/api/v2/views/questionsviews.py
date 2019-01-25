@@ -47,7 +47,6 @@ class PostQuestion(Resource):
             if saved == True:
                 return make_response(jsonify({"Message":"Question already exist"}),409)
             return resp, 201
-            question_data.close_db()
 
         except KeyError:
             return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)
