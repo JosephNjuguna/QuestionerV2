@@ -1,15 +1,19 @@
 #inbuilt modules
 import os
-#import datetime
-#downloaded module
+import datetime
+import uuid
+#downloaded modules
 from flask_restful import Resource
 from flask import request, jsonify, make_response
+from functools import wraps
 from werkzeug.security import generate_password_hash,check_password_hash
+import jwt
+from flask_jwt_extended import (JWTManager, verify_jwt_in_request, create_access_token,get_jwt_claims)
 #local imports
 from app.api.v2.models.users_models import UserModel
 from app.api.v2.utilis.validations import (CheckData, AuthValidation)
+from instance.config import app_config
 from app.api.v2.utilis.error_handler import RaiseErrors
-
 data_validation = CheckData()
 info_validation = AuthValidation()
 
@@ -27,7 +31,7 @@ class SignUp(Resource):
             confirm_password = data["confirm_password"]
             phonenumber = data["phone"]
             username = data["username"]
-            token = ""
+            public_id = str(uuid.uuid4())
 
             """check user name length"""
             name = info_validation.validate_username(username)
@@ -56,18 +60,20 @@ class SignUp(Resource):
                 "password" : password,
                 "confirm_password" : confirm_password,
                 "phonenumber":phonenumber,
-                "username" : username
+                "username" : username,
+                "public_id": public_id
             }
             user_data = UserModel(**user)
             saved = user_data.add_user()
             user_id = saved
+            access_token = create_access_token(user_id)
             resp = {
                 "status":201,
                 "data": [{
-                    "user_id": "{}".format(user_id),
+                    "token":access_token,
                     "username": username,
                     "firstname": firstname,
-                    "lastname": lastname
+                    "lastname": lastname,
                 }]
             }
             return resp
@@ -102,16 +108,13 @@ class LogIn(Resource):
             #check user exist
             check_user_data = user.login_user(user_details["email"])
             if not check_user_data:
-                return 'Your details were not found, please sign up',400
-            user_id, fname, lname, pwordhash, date_created = check_user_data
-            if check_password_hash(pwordhash, user_details["password"]):
-                name = "{}, {}".format(lname, fname)
-                resp = dict(
-                    message="successful log in",
-                    name= name,
-                    date_created=str(date_created)
-                )
-                return resp, 200    
-            return "The password is incorrect",400
+                return 'Your details were not found, Please sign up',400
+            hashedpassword,user_id = check_user_data
+            if not check_password_hash(hashedpassword,user_details['password']):
+                access_token = create_access_token(user_id)
+                return jsonify(access_token=access_token)
+            else:
+                return make_response(jsonify({"message":"Invalid credentials"}),401)
+
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a field key"}), 500)
