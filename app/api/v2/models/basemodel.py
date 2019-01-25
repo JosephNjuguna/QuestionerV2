@@ -34,7 +34,6 @@ class DatabaseConnection:
         cur.execute(query)
         fetchedRow = cur.fetchone()
         return fetchedRow
-        cur.close()
 
 
     def save_incoming_data_or_updates(self, query):
@@ -51,4 +50,11 @@ class DatabaseConnection:
         cur.execute(query)
         all_data_rows = cur.fetchall()
         return all_data_rows
-        cur.close()
+
+    def delete_single_data_row(self, query):
+        """ delete a single row of data from a table """
+        row_deleted = 0
+        cur.execute(query)
+        row_deleted = cur.rowcount
+        conn.commit()
+        return row_deleted

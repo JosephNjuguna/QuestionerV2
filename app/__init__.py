@@ -1,6 +1,7 @@
 import os
 import psycopg2
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from instance.config import app_config
 from app.api import version_two as questioner_two
 from app.api.v2.models.basemodel import DatabaseConnection
@@ -9,6 +10,7 @@ def create_app(name_conf):
     my_app = Flask(__name__, instance_relative_config=True)
     my_app.config.from_object(app_config[name_conf])
     my_app.config.from_pyfile('config.py')
+    jwt = JWTManager(my_app)
 
     db_url = app_config[name_conf].Database_Url
 
@@ -18,5 +20,5 @@ def create_app(name_conf):
     DatabaseConnection.create_tables_and_admin(DatabaseConnection)
 
     my_app.register_blueprint(questioner_two, url_prefix="/api/v2")
- 
+
     return my_app

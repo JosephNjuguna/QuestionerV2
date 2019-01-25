@@ -4,7 +4,7 @@ from flask import Blueprint
 from app.api.v2.views.rsvpviews import (rsvp_meetup)
 from app.api.v2.views.meetupviews import (Meetup, SpecificUpcomingMeetup)
 from app.api.v2.views.userviews import (SignUp, LogIn)
-from app.api.v2.views.meetupviews import (Meetup,SpecificUpcomingMeetup,DeleteMeetUp)
+from app.api.v2.views.meetupviews import (Meetup, SpecificUpcomingMeetup)
 from app.api.v2.views.questionsviews import (PostQuestion,GetQuestionsMeetup, GetSingleQuestion, UpvoteQuestion, DownVoteQuestion)
 version_two = Blueprint('version_two',__name__)
 api = Api(version_two)
@@ -14,10 +14,6 @@ api.add_resource(LogIn,'/auth/login')
 #meetup
 api.add_resource(Meetup, '/meetup', '/meetup/upcoming', '/meetup/upcoming/<int:m_id>/delete')
 api.add_resource(SpecificUpcomingMeetup, '/meetup/upcoming/<int:m_id>')
-#rsvp meetup
-api.add_resource(Meetup, '/meetup')
-api.add_resource(SpecificUpcomingMeetup, '/meetup/upcoming/<int:m_id>')
-api.add_resource(DeleteMeetUp, '/meetup/<int:m_id>/delete')
 #questions
 api.add_resource(rsvp_meetup, '/meetup/upcoming/<int:m_id>/rsvp')
 #rsvp
