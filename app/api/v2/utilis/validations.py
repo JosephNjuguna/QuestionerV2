@@ -8,10 +8,11 @@ from flask import jsonify, request, make_response, abort
 class CheckData:
     @staticmethod
     def checkkey(data):
-        for k, v in data.items():
-            if len(v)== 0:
-                return make_response(jsonify({"message":"empty field"}))
-
+        for key, value in data.items():
+            if key == "firstname" or key == "lastname" or key == "username":
+                for i in key:
+                    if "0-9@_+-." in i:
+                        return make_response(jsonify({"message":"firstname,lastname and username should not contain 0-9@_+-."}),400)                
 class AuthValidation:
     """Validators Class"""
 
