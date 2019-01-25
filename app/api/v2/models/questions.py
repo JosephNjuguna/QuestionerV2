@@ -53,7 +53,13 @@ class QuestionsModel(connection):
         result = self.fetch_all_tables_rows(query)
         return result
     
-    #remaining
+    def get_specificquestion(self ,m_id, q_id):
+        """get specific question from db"""
+        curr = self.db.cursor()
+        query = """SELECT id, createdon, postedby, meetupid, title, body, votes FROM questions WHERE id = '%s' """ %(q_id)
+        curr.execute(query)
+        return curr.fetchone()
+
     def upvote_question(self,m_id, q_id):
         query = "SELECT id, createdon, postedby, meetupid, title, body, votes FROM questions WHERE id = '%s'" % (q_id)
         data = self.fetch_single_data_row(query)
