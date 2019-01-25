@@ -46,6 +46,6 @@ class rsvp_meetup(Resource):
                         return make_response(jsonify({"message": "You have RSVP for this Meetup"}), 409)
                     return response
                 return make_response(jsonify({"message": "Username not found"}), 404)
-            return make_response(jsonify({"message": "Meetup id and topic not found"}), 404)
+            return make_response(jsonify({"message": "Meetup not found"}), 404)
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a topic, status, username field"}), 500)
