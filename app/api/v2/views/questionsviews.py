@@ -53,8 +53,17 @@ class PostQuestion(Resource):
             return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)
       
 class GetQuestionsMeetup(Resource):
-    def __init__(self):
-        pass
+    def get(self, m_id):
+        questions = QuestionsModel()
+        single_meetup_questions= questions.get_questions(m_id)
+        resp = {
+            "status":200,
+            "message":"all meetups",
+            "data":[{
+                "meetups": str(single_meetup_questions)
+                }]
+        }
+        return resp,200
 
 class GetSingleQuestion(Resource):
     """get single question class"""
