@@ -41,6 +41,12 @@ class QuestionsModel(connection):
         result = self.save_incoming_data_or_updates(query)
         return result
     
+    def get_questions(self , m_id):
+        """get question from db"""
+        query = "SELECT * FROM questions WHERE meetupid = '%s'" % (m_id)
+        result = self.fetch_all_tables_rows(query)
+        return result
+    
     #remaining
     def upvote_question(self,m_id, q_id):
         if self.check_question_exist(q_id):
