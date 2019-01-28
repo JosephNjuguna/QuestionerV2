@@ -76,7 +76,7 @@ class SignUp(Resource):
                     "lastname": lastname,
                 }]
             }
-            return resp
+            return resp,201
 class LogIn(Resource):
     """user log in endpoint"""
     @staticmethod
@@ -107,14 +107,14 @@ class LogIn(Resource):
 
             #check user exist
             check_user_data = user.login_user(user_details["email"])
-            if not check_user_data:
-                return 'Your details were not found, Please sign up',400
-            hashedpassword,user_id = check_user_data
-            if not check_password_hash(hashedpassword,user_details['password']):
-                access_token = create_access_token(user_id)
-                return jsonify(access_token=access_token)
-            else:
-                return make_response(jsonify({"message":"Invalid credentials"}),401)
+            if check_user_data:
+                hashedpassword,user_id = check_user_data
+                if not check_password_hash(hashedpassword,user_details['password']):
+                    access_token = create_access_token(user_id)
+                    return jsonify(access_token=access_token),200
+                else:
+                    return make_response(jsonify({"message":"Invalid credentials"}),401)
+            return make_response(jsonify({"message":'Your details were not found, Please sign up'}),400) 
 
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a field key"}), 500)

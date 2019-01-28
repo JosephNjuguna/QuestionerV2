@@ -1,18 +1,25 @@
 language: python
+
 python:
-  - "3.6"
+  - "3.6.3"
 
 install:
   - pip install -r requirements.txt
 
   - pip install coveralls
 
-  - pip install pytest-cov
+env:
+  - FLASK_VERSION=1.0.2
 
-script: 
-  - python -m pytest --cov=app/api
-  
+before_script:
+  - psql -c "CREATE DATABASE questionertest;" -U postgres
+
+script:
+  - python3 -m pytest --cov=app --cov-report term-missing
   - coveralls
 
 after_success:
   - coveralls
+
+notifications:
+  email: false
