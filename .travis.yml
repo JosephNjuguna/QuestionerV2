@@ -15,7 +15,7 @@ before_script:
   - psql -c "CREATE DATABASE questionertest;" -U postgres
 
 script:
-  - python3 -m pytest --cov=app --cov-report term-missing
+  - python3 -m pytest --cov=app
   - coveralls
 
 after_success:
