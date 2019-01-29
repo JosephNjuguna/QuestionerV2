@@ -76,7 +76,9 @@ class SignUp(Resource):
                     "lastname": lastname,
                 }]
             }
-            return resp,201
+            if saved != True:
+                return  make_response(jsonify({"message":resp}),201)
+            return make_response(jsonify({"message":"Username or email exist"}),409)
 class LogIn(Resource):
     """user log in endpoint"""
     @staticmethod
@@ -100,21 +102,18 @@ class LogIn(Resource):
 
             user_details= {
                 "email":email,
-                "password": password
+                "password":password
             }
-            #pass user data to db
-            user = UserModel(**user_details)
-
-            #check user exist
+            user = UserModel(email)
             check_user_data = user.login_user(user_details["email"])
-            if check_user_data:
-                hashedpassword,user_id = check_user_data
-                if not check_password_hash(hashedpassword,user_details['password']):
-                    access_token = create_access_token(user_id)
-                    return jsonify(access_token=access_token),200
-                else:
-                    return make_response(jsonify({"message":"Invalid credentials"}),401)
-            return make_response(jsonify({"message":'Your details were not found, Please sign up'}),400) 
+            user_id, user_password = check_user_data    
+            resp = {"user_id": check_user_data['public_id'], "user_email":email}
+            if check_password_hash(check_user_data['user_password'],password):
+                access_token = create_access_token(user_id)
+                return make_response(jsonify({
+                    "access_token": access_token,
+                    "user_data":resp}),200)
+            return make_response(jsonify({"message":"Invalid credentials"}),401)
 
         except KeyError:
             return make_response(jsonify({"status": 500, "error": "Expecting a field key"}), 500)
