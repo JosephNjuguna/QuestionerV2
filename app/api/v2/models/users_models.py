@@ -41,10 +41,10 @@ class UserModel(connection):
     def add_user(self):        
         """check if user exists"""
         if self.check_user_exist(self.username):
-            return "User exist"
+            return True
 
         if self.check_email_exist( self.email):
-            return "email exist"
+            return True
             
         # check if user exists
         query = """INSERT INTO users(firstname, lastname, email, user_password, confirm_password,phonenumber, username, public_id, isAdmin) 

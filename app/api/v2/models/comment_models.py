@@ -12,23 +12,29 @@ class CommentsModel(connection):
         self.user_id = user_id
         self.postedon = datetime.datetime.utcnow().strftime("%a/%b/%Y")
     
-    def check_comment_exist(self, question_body):
-        """check if comment already exists"""
-        query = "SELECT  body FROM comments WHERE body = '%s'" % (question_body)
+    def check_meetup_id(self, m_id):
+        """check whether the meetup exist or not"""
+        query = """SELECT id FROM meetup WHERE id = '%s'""" % (m_id)
         result = self.fetch_single_data_row(query)
-        return result
+        if result is None:
+            return False
+        return True 
 
     def check_question_id(self, q_id):
         """check if question id exists"""
         query = "SELECT id FROM questions WHERE id = '%s'" % (q_id)
         result = self.fetch_single_data_row(query)
-        return result
+        if result is None:
+            return False
+        return False
     
-    def check_meetup_id(self, m_id):
-        """check whether the meetup exist or not"""
-        query = """SELECT id FROM meetup WHERE id = '%s'""" % (m_id)
+    def check_comment_exist(self, question_body):
+        """check if comment already exists"""
+        query = "SELECT  body FROM comments WHERE body = '%s'" % (question_body)
         result = self.fetch_single_data_row(query)
-        return True
+        if result is not None:
+            return True
+        return False
 
     def post_comment_db(self):
         """Add comment details to the database"""

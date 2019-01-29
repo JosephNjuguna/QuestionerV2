@@ -51,13 +51,14 @@ class PostQuestion(Resource):
             return resp, 201
 
         except KeyError:
-            return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)
-      
+            return make_response(jsonify({"status":400, "message": "Missing either Question body or Question title input"}),400)    
 class GetQuestionsMeetup(Resource):
     def get(self, m_id):
         questions = QuestionsModel()
-        meetup_id = questions.check_meetup_id(m_id)
         single_meetup_questions= questions.get_questions(m_id)
+        meetup_exist = questions.check_meetup_id(m_id)
+        if not meetup_exist:
+            return make_response(jsonify({"message":"No Questions asked on this meetup or that Meetup doesnt exist"}))
         resp = {
             "status":200,
             "message":"all meetups",
@@ -65,24 +66,24 @@ class GetQuestionsMeetup(Resource):
                 "meetups": single_meetup_questions
                 }]
         }
-        if not meetup_id:
-            return make_response(jsonify({"Message":"Meetup id not found"}),404)
-        return resp
-
+        return make_response(jsonify({"message": resp}),200)
 
 class GetSingleQuestion(Resource):
     """get single question class"""
     def get(self, m_id, q_id ):
         single_question = QuestionsModel()
         one_meetup_questions= single_question.get_specificquestion(m_id, q_id)
+        meetup_exist = single_question.check_meetup_id(m_id)
+        if not meetup_exist:
+            return make_response(jsonify({"message":"Meetup id doesnt exist"}))
         resp = {
             "status":200,
             "message":"all meetups",
             "data":[{
-                "meetups": str(one_meetup_questions)
+                "meetups":one_meetup_questions
                 }]
         }
-        return resp,200
+        return make_response(jsonify({"message": resp}),200)
 
 class UpvoteQuestion(Resource):
     """upvote question class"""
