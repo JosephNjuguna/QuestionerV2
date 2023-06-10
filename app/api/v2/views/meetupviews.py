@@ -93,7 +93,6 @@ class SpecificUpcomingMeetup(Resource):
             return make_response(jsonify({"message":"Meetup not found"}),404)
         return make_response(jsonify({
                 "status":200,
-                "message":"Meetup found",
                 "data":[{
                     "meetup": single_meetup_data
                 }]}),200)

@@ -37,6 +37,7 @@ def create_tables():
         createdon VARCHAR NOT null,
         postedby INT NOT NULL,
         meetupid INT NOT NULL,
+        questionid VARCHAR NOT NULL,
         title VARCHAR(40) NOT NULL,
         body VARCHAR(200) NOT NULL,
         votes  INT NOT NULL);

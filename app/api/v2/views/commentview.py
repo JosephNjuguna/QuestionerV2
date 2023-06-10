@@ -40,9 +40,19 @@ class postComment(Resource):
                 "body": comment_body,
                 "comment_id": "{}".format(question_id)
             }
-            if saved == True:
-                return make_response(jsonify({"Message":"Comment already exist"}),409)
-            return resp, 201
+
+            check_meetup_id = comment_data.check_meetup_id(m_id)
+            check_question_id = comment_data.check_question_id(q_id)
+            check_comment = comment_data.check_comment_exist(comment_body)
+            if check_meetup_id == False:
+                return make_response(jsonify({"message":"Meetup id not found"}))
+            
+            if check_question_id == False:
+                return make_response(jsonify({"message":"Question not found"}))
+
+            if check_comment == False:
+                return resp, 201           
+            return make_response(jsonify({"Message":"Comment already exist"}),409)
 
         except KeyError:
             return make_response(jsonify({"status":400, "message": "Missing Comment body"}),400)

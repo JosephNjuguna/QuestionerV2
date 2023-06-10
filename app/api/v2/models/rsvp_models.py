@@ -18,23 +18,29 @@ class rsvp_model(connection):
         self.rsvp_on = datetime.datetime.utcnow()
         self.m_id = m_id
 
-    def check_meetup_exist(self, m_id, topic):
+    def check_meetup_exist(self, m_id):
         """check whether the meetup exist or not"""
-        query = "SELECT id FROM meetup WHERE id = '%s'" % (m_id)
+        query = """SELECT id FROM meetup WHERE id = '%s'""" % (m_id)
         result = self.fetch_single_data_row(query)
-        return result
+        if result is None:
+            return False
+        return True
 
     def check_user_name(self, username):
         """check if username exist"""
         query = "SELECT username FROM users WHERE username = '%s'" % (username)
         result = self.fetch_single_data_row(query)
-        return result
+        if result is None:
+            return False
+        return True
 
     def check_user_rsvp(self, username):
         """check if username exist"""
         query = "SELECT username FROM rsvp WHERE username = '%s'" % (username)
         result = self.fetch_single_data_row(query)
-        return result
+        if result is not None:
+            return True
+        return False
     
     def rsvp_meetup(self):
         if self.check_user_rsvp(self.username):
